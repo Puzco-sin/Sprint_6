@@ -1,65 +1,23 @@
 import allure
 import pytest
 
-from page_object.main_page import MainPage
-
-
-FAQ_ITEMS = [
-    (
-        "Сколько это стоит? И как оплатить?",
-        "Сутки — 400 рублей. Оплата курьеру — наличными или картой.",
-    ),
-    (
-        "Хочу сразу несколько самокатов! Так можно?",
-        "Пока что у нас так: один заказ — один самокат. Если хотите покататься "
-        "с друзьями, можете просто сделать несколько заказов — один за другим.",
-    ),
-    (
-        "Как рассчитывается время аренды?",
-        "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая "
-        "в течение дня. Отсчёт времени аренды начинается с момента, когда вы "
-        "оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, "
-        "суточная аренда закончится 9 мая в 20:30.",
-    ),
-    (
-        "Можно ли заказать самокат прямо на сегодня?",
-        "Только начиная с завтрашнего дня. Но скоро станем расторопнее.",
-    ),
-    (
-        "Можно ли продлить заказ или вернуть самокат раньше?",
-        "Пока что нет! Но если что-то срочное — всегда можно позвонить в "
-        "поддержку по красивому номеру 1010.",
-    ),
-    (
-        "Вы привозите зарядку вместе с самокатом?",
-        "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь "
-        "суток — даже если будете кататься без передышек и во сне. Зарядка "
-        "не понадобится.",
-    ),
-    (
-        "Можно ли отменить заказ?",
-        "Да, пока самокат не привезли. Штрафа не будет, объяснительной "
-        "записки тоже не попросим. Все же свои.",
-    ),
-    (
-        "Я жизу за МКАДом, привезёте?",
-        "Да, обязательно. Всем самокатов! И Москве, и Московской области.",
-    ),
-]
+from test_data.faq_data import FAQ_ITEMS
 
 
 @allure.feature("Вопросы о важном")
-@pytest.mark.parametrize(
-    ("question", "expected_answer"),
-    FAQ_ITEMS,
-    ids=[question for question, _ in FAQ_ITEMS],
-)
-def test_faq_question_opens_its_answer(driver, question, expected_answer):
-    main_page = MainPage(driver)
-    with allure.step("Открыть главную страницу"):
-        main_page.open()
+class TestFAQ:
+    @pytest.mark.parametrize(
+        ("question", "expected_answer"),
+        FAQ_ITEMS,
+        ids=[question for question, _ in FAQ_ITEMS],
+    )
+    def test_faq_question_opens_its_answer(
+        self, main_page, question, expected_answer
+    ):
+        with allure.step("Открыть главную страницу"):
+            main_page.open()
 
-    with allure.step(f"Открыть ответ на вопрос «{question}»"):
-        actual_answer = main_page.get_faq_answer(question)
+        with allure.step(f"Открыть ответ на вопрос «{question}»"):
+            actual_answer = main_page.get_faq_answer(question)
 
-    assert actual_answer == expected_answer
+        assert actual_answer == expected_answer
